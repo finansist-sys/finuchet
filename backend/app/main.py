@@ -1,0 +1,85 @@
+"""FastAPI application: Mini App API (+ Telegram webhook, wired in app.bot)."""
+
+from __future__ import annotations
+
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+from app.api.routes import accounts, me, stats, transactions
+from app.config import Settings, get_settings
+from app.db.session import make_engine, make_sessionmaker
+from app.log_setup import setup_logging
+from app.security.headers import SecurityMiddleware
+from app.security.ratelimit import RateLimiter
+from app.services.errors import DomainError
+
+log = logging.getLogger(__name__)
+
+
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or get_settings()
+    setup_logging()
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        engine = make_engine(settings.database_url.get_secret_value())
+        app.state.engine = engine
+        app.state.sessionmaker = make_sessionmaker(engine)
+        from app.bot.setup import start_bot, stop_bot
+
+        await start_bot(app)
+        try:
+            yield
+        finally:
+            await stop_bot(app)
+            await engine.dispose()
+
+    app = FastAPI(
+        title="Finuchet API",
+        lifespan=lifespan,
+        docs_url=None if settings.is_prod else "/docs",
+        redoc_url=None,
+        openapi_url=None if settings.is_prod else "/openapi.json",
+    )
+    app.state.settings = settings
+    app.state.api_limiter = RateLimiter(limit=120, window_seconds=60)
+    app.add_middleware(SecurityMiddleware)
+
+    @app.exception_handler(DomainError)
+    async def _domain(_: Request, exc: DomainError) -> JSONResponse:
+        return JSONResponse({"detail": exc.code}, status_code=exc.status)
+
+    @app.exception_handler(RequestValidationError)
+    async def _validation(_: Request, exc: RequestValidationError) -> JSONResponse:
+        # Do not echo submitted values back (they may contain personal notes).
+        fields = sorted({".".join(str(p) for p in e.get("loc", ())[1:]) for e in exc.errors()})
+        return JSONResponse({"detail": "invalid_request", "fields": fields[:10]}, status_code=422)
+
+    @app.exception_handler(StarletteHTTPException)
+    async def _http(_: Request, exc: StarletteHTTPException) -> JSONResponse:
+        return JSONResponse(
+            {"detail": exc.detail if isinstance(exc.detail, str) else "error"}, status_code=exc.status_code
+        )
+
+    @app.exception_handler(Exception)
+    async def _unhandled(_: Request, exc: Exception) -> JSONResponse:
+        log.error("unhandled error: %s", type(exc).__name__)
+        return JSONResponse({"detail": "internal_error"}, status_code=500)
+
+    for router in (me.router, accounts.router, transactions.router, stats.router):
+        app.include_router(router)
+
+    from app.bot.setup import webhook_router
+
+    app.include_router(webhook_router)
+
+    @app.get("/healthz", include_in_schema=False)
+    async def healthz() -> dict:
+        return {"ok": True}
+
+    return app
