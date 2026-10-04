@@ -1,0 +1,8 @@
+#!/bin/sh
+# Blocks commits that could leak personal or secret data (repo is public).
+PY=""
+for c in python py python3; do
+  if command -v "$c" >/dev/null 2>&1 && "$c" -c "import sys" >/dev/null 2>&1; then PY="$c"; break; fi
+done
+[ -z "$PY" ] && { echo "privacy-guard: python not found, commit blocked" >&2; exit 1; }
+exec "$PY" scripts/privacy_guard.py message "$1"

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Финучёт — аналитика</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: {{t.page}}; color: {{t.text}}; font-family: Onest, system-ui, sans-serif; display: flex; flex-direction: column; gap: 16px; padding: 16px 24px 24px">
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; background: {{t.tonal}}">
+    <button type="button" aria-pressed="false" style="height: 34px; border: 0; border-radius: 9px; background: transparent; color: {{t.hint}}; font: 500 15px Onest, system-ui, sans-serif">Неделя</button>
+    <button type="button" aria-pressed="true" style="height: 34px; border: 0; border-radius: 9px; background: {{t.card}}; color: {{t.text}}; font: 600 15px Onest, system-ui, sans-serif">Месяц</button>
+    <button type="button" aria-pressed="false" style="height: 34px; border: 0; border-radius: 9px; background: transparent; color: {{t.hint}}; font: 500 15px Onest, system-ui, sans-serif">Год</button>
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: center; gap: 8px">
+    <button type="button" aria-label="Предыдущий месяц" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{t.accentText}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+    <h1 style="margin: 0; font-size: 20px; font-weight: 600; min-width: 120px; text-align: center">Октябрь</h1>
+    <button type="button" aria-label="Следующий месяц" style="width: 44px; height: 44px; border: 0; background: transparent; color: {{t.hint}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+  </div>
+
+  <div style="position: relative; width: 220px; height: 220px; align-self: center">
+    <svg width="220" height="220" viewBox="0 0 210 210" role="img" aria-label="Расходы за октябрь по категориям: продукты 34%, дом 22%, кафе 18%, транспорт 14%, другое 12%">
+      <g transform="rotate(-90 105 105)" fill="none" stroke-width="16">
+        <circle cx="105" cy="105" r="80" stroke="{{c1}}" stroke-dasharray="167.91 334.74" stroke-dashoffset="0"></circle>
+        <circle cx="105" cy="105" r="80" stroke="{{c5}}" stroke-dasharray="107.58 395.07" stroke-dashoffset="-170.91"></circle>
+        <circle cx="105" cy="105" r="80" stroke="{{c2}}" stroke-dasharray="87.48 415.17" stroke-dashoffset="-281.49"></circle>
+        <circle cx="105" cy="105" r="80" stroke="{{c3}}" stroke-dasharray="67.37 435.28" stroke-dashoffset="-371.97"></circle>
+        <circle cx="105" cy="105" r="80" stroke="{{t.other}}" stroke-dasharray="57.32 445.33" stroke-dashoffset="-442.34"></circle>
+      </g>
+    </svg>
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px">
+      <span style="font-size: 28px; font-weight: 600; letter-spacing: -0.5px">41 870 ₽</span>
+      <span style="font-size: 14px; color: {{t.hint}}">потрачено</span>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column">
+    <sc-for list="{{legend}}" as="r" hint-placeholder-count="5">
+      <div style="display: grid; grid-template-columns: 12px minmax(0, 1fr) 44px 90px; align-items: center; gap: 12px; padding: 10px 0; font-size: 16px">
+        <span style="width: 10px; height: 10px; border-radius: 50%; background: {{r.color}}"></span>
+        <span>{{r.name}}</span>
+        <span style="color: {{t.hint}}; text-align: right; font-variant-numeric: tabular-nums">{{r.pct}}</span>
+        <span style="font-weight: 500; text-align: right; font-variant-numeric: tabular-nums">{{r.sum}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <section style="background: {{t.card}}; border-radius: 20px; padding: 16px 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: auto">
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 13px; color: {{t.hint}}">Доходы</span>
+      <span style="font-size: 17px; font-weight: 600; color: {{t.income}}">85 000</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 13px; color: {{t.hint}}">Расходы</span>
+      <span style="font-size: 17px; font-weight: 600">41 870</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 13px; color: {{t.hint}}">Осталось</span>
+      <span style="font-size: 17px; font-weight: 600">43 130</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var dark = this.props.dark ?? false;
+    var t = dark
+      ? { page: '#0e1621', card: '#17212b', text: '#f5f7fa', hint: '#8d9baa', accentText: '#6ab3f3', tonal: '#1f3043', income: '#4cc26a', other: '#56667a' }
+      : { page: '#f1f2f6', card: '#ffffff', text: '#000000', hint: '#6d7277', accentText: '#1f74bb', tonal: '#e2ecf7', income: '#0b7a2c', other: '#b3b9c1' };
+    var pal = dark
+      ? ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181']
+      : ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4'];
+    var legend = [
+      { name: 'Продукты', pct: '34%', sum: '14 230 ₽', color: pal[0] },
+      { name: 'Дом', pct: '22%', sum: '9 200 ₽', color: pal[4] },
+      { name: 'Кафе', pct: '18%', sum: '7 540 ₽', color: pal[1] },
+      { name: 'Транспорт', pct: '14%', sum: '5 860 ₽', color: pal[2] },
+      { name: 'Другое', pct: '12%', sum: '5 040 ₽', color: t.other }
+    ];
+    return { t: t, legend: legend, c1: pal[0], c2: pal[1], c3: pal[2], c5: pal[4] };
+  }
+}
+</script>
+</body>
+</html>

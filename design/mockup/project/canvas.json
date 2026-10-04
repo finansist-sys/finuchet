@@ -1,0 +1,84 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Add.dc.html": {
+      "h": 844,
+      "title": "Ввод расхода",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "AddDark.dc.html": {
+      "h": 844,
+      "title": "Ввод — тёмная",
+      "w": 390,
+      "x": 470,
+      "y": 1284
+    },
+    "Analytics.dc.html": {
+      "h": 844,
+      "title": "Аналитика",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "AnalyticsDark.dc.html": {
+      "h": 844,
+      "title": "Аналитика — тёмная",
+      "w": 390,
+      "x": 940,
+      "y": 1284
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "title": "Главная",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "MainDark.dc.html": {
+      "h": 844,
+      "title": "Главная — тёмная",
+      "w": 390,
+      "x": 0,
+      "y": 1284
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-04T17:10:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 1330,
+      "text": "Светлая тема Telegram",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t2": {
+      "kind": "title1",
+      "maxW": 1330,
+      "text": "Ночная тема Telegram",
+      "w": 240,
+      "x": 0,
+      "y": 1024
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Add.dc.html",
+    "Analytics.dc.html",
+    "MainDark.dc.html",
+    "AddDark.dc.html",
+    "AnalyticsDark.dc.html"
+  ],
+  "pages": [],
+  "title": "Финучёт — макет Mini App"
+}

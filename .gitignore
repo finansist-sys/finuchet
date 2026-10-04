@@ -1,0 +1,37 @@
+# secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+*.db
+*.sqlite3
+
+# node
+node_modules/
+dist/
+.vite/
+coverage/
+
+# os / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# backups / dumps (may contain user data)
+*.sql
+*.dump
+*.age
+backups/

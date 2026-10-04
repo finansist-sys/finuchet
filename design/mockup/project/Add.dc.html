@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Финучёт — новый расход</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: {{t.page}}; color: {{t.text}}; font-family: Onest, system-ui, sans-serif; display: flex; flex-direction: column; gap: 22px; padding: 32px 20px 24px">
+
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+    <span style="font-size: 15px; color: {{t.hint}}">Расход</span>
+    <div style="display: flex; align-items: baseline; gap: 6px">
+      <span style="font-size: 56px; font-weight: 600; letter-spacing: -2px; line-height: 1">350</span>
+      <span style="font-size: 30px; font-weight: 500; color: {{t.hint}}">₽</span>
+    </div>
+    <div style="display: flex; gap: 4px">
+      <button type="button" style="height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: {{t.accentText}}; font: 500 15px Onest, system-ui, sans-serif">Наличные</button>
+      <button type="button" style="height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: {{t.accentText}}; font: 500 15px Onest, system-ui, sans-serif">Сегодня</button>
+      <button type="button" style="height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: {{t.accentText}}; font: 500 15px Onest, system-ui, sans-serif">Заметка</button>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 4px">
+    <button type="button" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 400 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{c1.bg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c1.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.7 12.2a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 7H6"></path></svg></span>Продукты</button>
+    <button type="button" aria-pressed="true" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 600 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{c2.fg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"></path><path d="M17 9h1.5a2.5 2.5 0 0 1 0 5H17"></path><path d="M8 2v3M12 2v3"></path></svg></span>Кафе</button>
+    <button type="button" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 400 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{c3.bg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c3.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="15" rx="3"></rect><path d="M4 11h16M8 18v3M16 18v3"></path></svg></span>Транспорт</button>
+    <button type="button" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 400 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{c5.bg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c5.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path><path d="M10 20v-6h4v6"></path></svg></span>Дом</button>
+    <button type="button" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 400 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{c4.bg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c4.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg></span>Связь</button>
+    <button type="button" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 400 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{c6.bg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c6.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></span>Здоровье</button>
+    <button type="button" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 400 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{c7.bg}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c7.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 5v14M17 5v14M3 12h18"></path></svg></span>Досуг</button>
+    <button type="button" style="border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{t.text}}; font: 400 12px Onest, system-ui, sans-serif">
+      <span style="width: 46px; height: 46px; border-radius: 50%; background: {{t.tonal}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.hint}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="1.3"></circle><circle cx="12" cy="12" r="1.3"></circle><circle cx="18" cy="12" r="1.3"></circle></svg></span>Ещё</button>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <span style="font-size: 14px; color: {{t.hint}}; padding-left: 4px">Часто</span>
+    <div style="display: flex; gap: 8px">
+      <button type="button" style="height: 40px; padding: 0 14px; border: 0; border-radius: 12px; background: {{t.card}}; color: {{t.text}}; font: 500 15px Onest, system-ui, sans-serif">Кофе 350</button>
+      <button type="button" style="height: 40px; padding: 0 14px; border: 0; border-radius: 12px; background: {{t.card}}; color: {{t.text}}; font: 500 15px Onest, system-ui, sans-serif">Метро 65</button>
+      <button type="button" style="height: 40px; padding: 0 14px; border: 0; border-radius: 12px; background: {{t.card}}; color: {{t.text}}; font: 500 15px Onest, system-ui, sans-serif">Обед 450</button>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: auto">
+    <sc-for list="{{keys}}" as="k" hint-placeholder-count="12">
+      <button type="button" aria-label="{{k.label}}" style="height: 50px; border: 0; border-radius: 12px; background: transparent; color: {{t.text}}; font: 500 24px Onest, system-ui, sans-serif">{{k.text}}</button>
+    </sc-for>
+  </div>
+
+  <button type="button" style="height: 54px; border: 0; border-radius: 16px; background: {{t.accent}}; color: #ffffff; font: 600 17px Onest, system-ui, sans-serif">Сохранить</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var dark = this.props.dark ?? false;
+    var t = dark
+      ? { page: '#0e1621', card: '#17212b', text: '#f5f7fa', hint: '#8d9baa', accent: '#2b6fae', accentText: '#6ab3f3', tonal: '#1f3043' }
+      : { page: '#f1f2f6', card: '#ffffff', text: '#000000', hint: '#6d7277', accent: '#1f74bb', accentText: '#1f74bb', tonal: '#e2ecf7' };
+    var L = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#4a3aa7'];
+    var D = ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#0ca30c', '#9085e9'];
+    var pal = dark ? D : L;
+    var cat = function (i) { return { fg: pal[i], bg: pal[i] + (dark ? '33' : '1f') }; };
+    var keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', ',', '0', '⌫'].map(function (k) {
+      return { text: k, label: k === '⌫' ? 'Стереть' : k };
+    });
+    return { t: t, keys: keys, c1: cat(0), c2: cat(1), c3: cat(2), c4: cat(3), c5: cat(4), c6: cat(5), c7: cat(6) };
+  }
+}
+</script>
+</body>
+</html>

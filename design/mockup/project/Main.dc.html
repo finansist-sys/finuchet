@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Финучёт — главная</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1f74bb}a:hover{color:#175b93}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: {{t.page}}; color: {{t.text}}; font-family: Onest, system-ui, sans-serif; display: flex; flex-direction: column; gap: 20px; padding: 28px 24px 24px">
+
+  <section style="display: flex; flex-direction: column; align-items: center; gap: 10px">
+    <div style="font-size: 15px; color: {{t.hint}}">Всего</div>
+    <div style="display: flex; align-items: baseline">
+      <span style="font-size: 48px; font-weight: 600; letter-spacing: -1.5px; line-height: 1">148 320</span>
+      <span style="font-size: 28px; font-weight: 500; color: {{t.hint}}; margin-left: 6px">₽</span>
+    </div>
+    <div style="display: flex; gap: 20px; font-size: 15px; color: {{t.hint}}">
+      <span>Карта <span style="color: {{t.text}}; font-weight: 500">142 100</span></span>
+      <span>Наличные <span style="color: {{t.text}}; font-weight: 500">6 220</span></span>
+    </div>
+    <div style="font-size: 14px; color: {{t.hint}}">и ещё 320 $</div>
+  </section>
+
+  <section style="background: {{t.card}}; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <span style="font-size: 15px; color: {{t.hint}}">Потрачено в октябре</span>
+      <span style="font-size: 15px; color: {{t.hint}}">из 85 000</span>
+    </div>
+    <div style="font-size: 30px; font-weight: 600; letter-spacing: -0.5px">41 870 ₽</div>
+    <div style="height: 8px; border-radius: 999px; background: {{t.track}}" role="img" aria-label="Потрачено 49% от дохода за октябрь">
+      <div style="width: 49%; height: 8px; border-radius: 999px; background: {{t.accentText}}"></div>
+    </div>
+  </section>
+
+  <section style="background: {{t.card}}; border-radius: 20px; padding: 18px 20px 14px; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <span style="font-size: 15px; color: {{t.hint}}">Траты за неделю</span>
+      <span style="font-size: 15px; font-weight: 500">9 430 ₽</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; align-items: end; height: 56px" role="img" aria-label="Траты по дням недели, сегодня воскресенье: 1 250 ₽">
+      <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+        <div style="height: {{d.h}}px; background: {{d.c}}; border-radius: 4px 4px 2px 2px"></div>
+      </sc-for>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; text-align: center; font-size: 12px">
+      <sc-for list="{{week}}" as="d" hint-placeholder-count="7">
+        <span style="color: {{d.lc}}; font-weight: {{d.fw}}">{{d.l}}</span>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 0 4px 6px">
+      <h2 style="margin: 0; font-size: 17px; font-weight: 600">Последние</h2>
+      <a href="#" style="font-size: 15px; color: {{t.accentText}}; text-decoration: none">Все</a>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 4px">
+      <span style="width: 40px; height: 40px; border-radius: 50%; background: {{c2.bg}}; display: flex; align-items: center; justify-content: center; flex: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c2.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"></path><path d="M17 9h1.5a2.5 2.5 0 0 1 0 5H17"></path><path d="M8 2v3M12 2v3"></path></svg>
+      </span>
+      <span style="flex: 1 1 auto; font-size: 16px">Кафе</span>
+      <span style="font-size: 16px; font-weight: 500">−350 ₽</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 4px">
+      <span style="width: 40px; height: 40px; border-radius: 50%; background: {{c1.bg}}; display: flex; align-items: center; justify-content: center; flex: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c1.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.7 12.2a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 7H6"></path></svg>
+      </span>
+      <span style="flex: 1 1 auto; font-size: 16px">Продукты</span>
+      <span style="font-size: 16px; font-weight: 500">−1 840 ₽</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 4px">
+      <span style="width: 40px; height: 40px; border-radius: 50%; background: {{c6.bg}}; display: flex; align-items: center; justify-content: center; flex: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{c6.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"></path></svg>
+      </span>
+      <span style="flex: 1 1 auto; font-size: 16px">Зарплата</span>
+      <span style="font-size: 16px; font-weight: 500; color: {{t.income}}">+85 000 ₽</span>
+    </div>
+  </section>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: auto">
+    <button type="button" style="height: 54px; border: 0; border-radius: 16px; background: {{t.accent}}; color: #ffffff; font: 600 17px Onest, system-ui, sans-serif">Расход</button>
+    <button type="button" style="height: 54px; border: 0; border-radius: 16px; background: {{t.tonal}}; color: {{t.accentText}}; font: 600 17px Onest, system-ui, sans-serif">Доход</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var dark = this.props.dark ?? false;
+    var t = dark
+      ? { page: '#0e1621', card: '#17212b', text: '#f5f7fa', hint: '#8d9baa', track: '#243140', accent: '#2b6fae', accentText: '#6ab3f3', tonal: '#1f3043', income: '#4cc26a', bar: '#5d6d7e' }
+      : { page: '#f1f2f6', card: '#ffffff', text: '#000000', hint: '#6d7277', track: '#eceef1', accent: '#1f74bb', accentText: '#1f74bb', tonal: '#e2ecf7', income: '#0b7a2c', bar: '#8d96a0' };
+    var L = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300'];
+    var D = ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#0ca30c'];
+    var pal = dark ? D : L;
+    var cat = function (i) { return { fg: pal[i], bg: pal[i] + (dark ? '33' : '1f') }; };
+    var vals = [1800, 640, 2900, 1100, 0, 1740, 1250];
+    var labels = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
+    var today = 6;
+    var week = vals.map(function (v, i) {
+      var isToday = i === today;
+      return {
+        h: Math.max(4, Math.round(v / 2900 * 56)),
+        c: isToday ? t.accentText : t.bar,
+        l: labels[i],
+        lc: isToday ? t.text : t.hint,
+        fw: isToday ? 600 : 400
+      };
+    });
+    return { t: t, week: week, c1: cat(0), c2: cat(1), c6: cat(5) };
+  }
+}
+</script>
+</body>
+</html>
