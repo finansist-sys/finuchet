@@ -35,8 +35,16 @@ declare global {
 export const tg: WebApp | undefined = window.Telegram?.WebApp;
 
 export function initTelegram(onThemeChange: (scheme: "light" | "dark") => void): void {
+  const devScheme = import.meta.env.DEV ? new URLSearchParams(location.search).get("scheme") : null;
   const apply = () => {
-    const scheme = tg?.colorScheme ?? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const scheme =
+      devScheme === "dark" || devScheme === "light"
+        ? devScheme
+        : tg?.initData
+          ? tg.colorScheme
+          : matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
     document.documentElement.dataset.scheme = scheme;
     onThemeChange(scheme);
   };
@@ -74,11 +82,14 @@ export function setClosingConfirmation(enabled: boolean): void {
   (enabled ? tg.enableClosingConfirmation : tg.disableClosingConfirmation)?.call(tg);
 }
 
+/** True when Telegram shows its own Back button; otherwise the app renders one. */
+export const hasNativeBack = Boolean(tg?.initData && tg.isVersionAtLeast("6.1"));
+
 let backHandler: (() => void) | null = null;
 
 export function setBackButton(handler: (() => void) | null): void {
   const bb = tg?.BackButton;
-  if (!bb) return;
+  if (!bb || !tg?.isVersionAtLeast("6.1")) return;
   if (backHandler) bb.offClick(backHandler);
   backHandler = handler;
   if (handler) {

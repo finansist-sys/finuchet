@@ -43,6 +43,17 @@ type Store = {
 
 const Ctx = createContext<Store | null>(null);
 
+// Dev only (stripped from production builds): open a screen directly, e.g. ?screen=analytics
+function initialStack(): Route[] {
+  const home: Route = { name: "home" };
+  if (!import.meta.env.DEV) return [home];
+  const name = new URLSearchParams(location.search).get("screen");
+  const simple = ["history", "analytics", "accounts", "settings", "categories", "privacy"];
+  if (name === "add") return [home, { name: "add", kind: "expense" }];
+  if (name && simple.includes(name)) return [home, { name } as Route];
+  return [home];
+}
+
 export function useStore(): Store {
   const s = useContext(Ctx);
   if (!s) throw new Error("StoreProvider missing");
@@ -56,7 +67,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadError, setLoadError] = useState(false);
-  const [stack, setStack] = useState<Route[]>([{ name: "home" }]);
+  const [stack, setStack] = useState<Route[]>(initialStack);
   const [toast, setToast] = useState<Toast | null>(null);
   const [dataVersion, setDataVersion] = useState(0);
   const toastTimer = useRef<number | undefined>(undefined);

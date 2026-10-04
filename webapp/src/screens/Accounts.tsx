@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Icon } from "../components/Icon";
 import { Segmented, Sheet } from "../components/ui";
 import { api, type Account } from "../lib/api";
-import { currencyInfo, formatMoney, parseInput, toInput } from "../lib/money";
+import { currencyInfo, currencyLabel, formatMoney, parseInput, toInput } from "../lib/money";
 import { haptic } from "../lib/telegram";
 import { useStore } from "../store";
 
@@ -168,7 +168,7 @@ export function Accounts() {
                 aria-pressed={c === newCur}
                 onClick={() => setNewCur(c)}
               >
-                {currencyInfo(c).symbol} {c}
+                {currencyLabel(c)}
               </button>
             ))}
           </div>

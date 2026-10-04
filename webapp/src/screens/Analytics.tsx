@@ -151,7 +151,7 @@ export function Analytics() {
             </div>
           )}
 
-          <section className="card summary push-bottom">
+          <section className="card summary">
             <div>
               <span className="hint small">{t.incomes}</span>
               <b className="income num">{formatMoney(data.income, currency, { whole: true, symbol: false })}</b>

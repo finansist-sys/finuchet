@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CATEGORY_ICONS, Icon } from "../components/Icon";
 import { CatIcon, Segmented, Sheet } from "../components/ui";
 import { api, type Kind, type Me } from "../lib/api";
-import { currencyInfo } from "../lib/money";
+import { currencyLabel } from "../lib/money";
 import { haptic } from "../lib/telegram";
 import { useStore } from "../store";
 
@@ -37,7 +37,7 @@ export function Settings() {
   const rows: { icon: string; label: string; value?: string; onClick: () => void }[] = [
     { icon: "card", label: t.accounts, onClick: () => push({ name: "accounts" }) },
     { icon: "tag", label: t.categories, onClick: () => push({ name: "categories" }) },
-    { icon: "cash", label: t.baseCurrency, value: `${currencyInfo(base).symbol} ${base}`, onClick: () => setSheet("currency") },
+    { icon: "cash", label: t.baseCurrency, value: currencyLabel(base), onClick: () => setSheet("currency") },
     { icon: "shield", label: t.privacy, onClick: () => push({ name: "privacy" }) },
   ];
 
@@ -74,7 +74,7 @@ export function Settings() {
               aria-pressed={c.code === base}
               onClick={() => setBase(c.code)}
             >
-              {c.symbol} {c.code}
+              {currencyLabel(c.code)}
             </button>
           ))}
         </div>

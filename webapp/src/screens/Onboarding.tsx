@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Numpad, Sheet } from "../components/ui";
 import { api, type Me } from "../lib/api";
-import { currencyInfo, formatMoney, parseInput, pressKey } from "../lib/money";
+import { currencyInfo, currencyLabel, formatMoney, parseInput, pressKey } from "../lib/money";
 import { haptic } from "../lib/telegram";
 import { useStore } from "../store";
 
@@ -90,7 +90,7 @@ export function Onboarding() {
               aria-pressed={code === currency}
               onClick={() => setCurrency(code)}
             >
-              {currencyInfo(code).symbol} {code}
+              {currencyLabel(code)}
             </button>
           ))}
         </div>
@@ -109,8 +109,12 @@ export function Onboarding() {
   return (
     <main className="screen">
       <p className="hint center">{isCards ? "2 / 3" : "3 / 3"}</p>
-      <h1 className="h1 center">{isCards ? t.onCards : t.inCash}</h1>
-      <AmountView input={input} currency={currency} />
+      <div className="field" style={{ margin: "auto 0", gap: 14 }}>
+        <h1 className="h1 center">{isCards ? t.onCards : t.inCash}</h1>
+        <AmountView input={input} currency={currency} />
+        <p className="hint center small" style={{ margin: 0 }}>
+          {t.roughlyOk}
+        </p>
       {!isCards && (
         <div className="quiet-row">
           <button type="button" className="link-btn" onClick={() => setExtraOpen(true)}>
@@ -120,7 +124,7 @@ export function Onboarding() {
           </button>
         </div>
       )}
-      <div className="push-bottom" />
+      </div>
       <Numpad
         allowComma={currencyInfo(currency).exponent > 0}
         onKey={(k) => setInput((s) => pressKey(s, k, currency))}
@@ -146,7 +150,7 @@ export function Onboarding() {
               aria-pressed={extra?.currency === c.code}
               onClick={() => setExtra({ currency: c.code, input: extra?.input ?? "" })}
             >
-              {c.symbol} {c.code}
+              {currencyLabel(c.code)}
             </button>
           ))}
         </div>

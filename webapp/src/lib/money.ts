@@ -9,6 +9,12 @@ export function registerCurrencies(list: { code: string; symbol: string; exponen
   for (const c of list) registry.set(c.code, { symbol: c.symbol, exponent: c.exponent });
 }
 
+/** "₽ RUB", or just "AED" when the currency has no separate symbol. */
+export function currencyLabel(code: string): string {
+  const { symbol } = currencyInfo(code);
+  return symbol && symbol !== code ? `${symbol} ${code}` : code;
+}
+
 export function currencyInfo(code: string): CurrencyInfo {
   return registry.get(code) ?? { ...FALLBACK, symbol: code };
 }

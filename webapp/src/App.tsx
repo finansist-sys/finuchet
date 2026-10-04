@@ -1,4 +1,7 @@
+import { useEffect } from "react";
+import { Icon } from "./components/Icon";
 import { Skeleton, ToastView } from "./components/ui";
+import { hasNativeBack } from "./lib/telegram";
 import { Accounts } from "./screens/Accounts";
 import { Add } from "./screens/Add";
 import { Analytics } from "./screens/Analytics";
@@ -53,9 +56,26 @@ function Screen() {
   }
 }
 
+function BrowserBack() {
+  const { route, me, back, t } = useStore();
+  const visible = !hasNativeBack && route.name !== "home" && Boolean(me?.onboarded);
+  useEffect(() => {
+    document.documentElement.classList.toggle("has-browser-back", visible);
+  }, [visible]);
+  if (!visible) return null;
+  return (
+    <div className="browser-back">
+      <button type="button" className="icon-btn" aria-label={t.cancel} onClick={back}>
+        <Icon name="back" size={22} />
+      </button>
+    </div>
+  );
+}
+
 export function App() {
   return (
     <>
+      <BrowserBack />
       <Screen />
       <ToastView />
     </>

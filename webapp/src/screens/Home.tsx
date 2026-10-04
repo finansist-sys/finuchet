@@ -177,7 +177,7 @@ export function Home() {
         )}
       </section>
 
-      <div className="btn-row push-bottom">
+      <div className="btn-row sticky-actions">
         <button type="button" className="btn btn-primary" onClick={() => push({ name: "add", kind: "expense" })}>
           {t.expense}
         </button>
