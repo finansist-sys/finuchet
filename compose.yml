@@ -1,0 +1,74 @@
+# Production stack: `docker compose up -d --build` (reads secrets from ./.env).
+name: finuchet
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-finuchet}
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?set POSTGRES_ADMIN_PASSWORD in .env}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?set APP_DB_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deploy/db-init:/docker-entrypoint-initdb.d:ro
+    networks: [internal]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    # No "ports": the database is never reachable from outside.
+
+  app:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENV: prod
+      BOT_MODE: webhook
+      PUBLIC_URL: https://${DOMAIN:?set DOMAIN in .env}
+      BOT_TOKEN: ${BOT_TOKEN:?set BOT_TOKEN in .env}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:?set WEBHOOK_SECRET in .env}
+      WEBHOOK_PATH_TOKEN: ${WEBHOOK_PATH_TOKEN:?set WEBHOOK_PATH_TOKEN in .env}
+      ID_PEPPER: ${ID_PEPPER:?set ID_PEPPER in .env}
+      DATABASE_URL: postgresql+asyncpg://finuchet_app:${APP_DB_PASSWORD}@db:5432/${POSTGRES_DB:-finuchet}
+    networks: [internal, egress]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+  caddy:
+    build:
+      context: .
+      dockerfile: deploy/Caddy.Dockerfile
+    restart: unless-stopped
+    depends_on: [app]
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [internal, egress]
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: ["no-new-privileges:true"]
+
+networks:
+  internal:
+    internal: true # no internet access: db lives only here
+  egress: {} # app -> api.telegram.org, caddy -> Let's Encrypt
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

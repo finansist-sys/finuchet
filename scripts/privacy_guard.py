@@ -12,6 +12,7 @@ or the commit metadata could leak personal or secret data:
 Usage (wired up by .githooks/):
     python scripts/privacy_guard.py staged        # pre-commit
     python scripts/privacy_guard.py message FILE  # commit-msg
+    python scripts/privacy_guard.py all           # every tracked file + history identities (CI)
 """
 
 from __future__ import annotations
@@ -114,11 +115,44 @@ def check_message(path: str) -> list[str]:
     return problems
 
 
+def check_all() -> list[str]:
+    problems = []
+    for path in git("ls-files", "-z").split("\0"):
+        if not path:
+            continue
+        posix = str(PurePosixPath(path))
+        for pattern in FORBIDDEN_FILE_PATTERNS:
+            if pattern.search(posix):
+                problems.append(f"{posix}: this file type must never be committed")
+        if posix in SELF_EXEMPT:
+            continue
+        try:
+            with open(path, encoding="utf-8") as fh:
+                text = fh.read()
+        except (UnicodeDecodeError, OSError):
+            continue
+        for line in text.splitlines():
+            for email in bad_emails(line):
+                problems.append(f"{posix}: e-mail address {email!r}")
+            for name, rule in CONTENT_RULES:
+                if rule.search(line):
+                    problems.append(f"{posix}: {name}")
+    for email in set(git("log", "--format=%ae%n%ce").split()):
+        if not email.lower().endswith(("@users.noreply.github.com", "noreply@github.com")):
+            problems.append(f"git history: non-anonymous author/committer e-mail {email!r}")
+    return problems
+
+
 def main() -> int:
-    if len(sys.argv) < 2 or sys.argv[1] not in {"staged", "message"}:
+    if len(sys.argv) < 2 or sys.argv[1] not in {"staged", "message", "all"}:
         print(__doc__)
         return 2
-    problems = check_staged() if sys.argv[1] == "staged" else check_message(sys.argv[2])
+    if sys.argv[1] == "all":
+        problems = check_all()
+    elif sys.argv[1] == "staged":
+        problems = check_staged()
+    else:
+        problems = check_message(sys.argv[2])
     if problems:
         print("privacy-guard: commit blocked - possible leak of personal/secret data:", file=sys.stderr)
         for p in problems:

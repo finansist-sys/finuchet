@@ -1,0 +1,11 @@
+.git
+.github
+.githooks
+.env
+.env.*
+backend
+design
+scripts
+**/node_modules
+**/dist
+**/*.db
