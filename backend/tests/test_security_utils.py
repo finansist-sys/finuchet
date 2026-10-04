@@ -42,3 +42,25 @@ def test_rate_limiter():
     assert rl.allow("k", now=0) and rl.allow("k", now=1)
     assert not rl.allow("k", now=2)
     assert rl.allow("k", now=12)
+
+
+def test_uvicorn_error_logs_pass_through_redaction(capfd):
+    """Unhandled-error tracebacks (may contain SQL parameters) must not reach the output."""
+    import logging
+
+    import logging.config
+
+    from uvicorn.config import LOGGING_CONFIG
+
+    from app.log_setup import setup_logging
+
+    logging.config.dictConfig(LOGGING_CONFIG)  # exactly what uvicorn does before loading the app
+    setup_logging()
+    secret = "SECRET" + "-NOTE-" + "4242"
+    try:
+        raise RuntimeError(f"(sqlite3.IntegrityError) [parameters: ('{secret}',)]")
+    except RuntimeError:
+        logging.getLogger("uvicorn.error").exception("Exception in ASGI application")
+    out = capfd.readouterr()
+    assert "Exception in ASGI application" in out.out
+    assert secret not in out.out and secret not in out.err

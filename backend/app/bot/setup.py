@@ -79,7 +79,7 @@ async def start_bot(app: FastAPI) -> None:
             url=f"{settings.public_url.rstrip('/')}/tg/{settings.webhook_path_token.get_secret_value()}",
             secret_token=settings.webhook_secret.get_secret_value(),
             allowed_updates=dp.resolve_used_update_types(),
-            drop_pending_updates=True,
+            drop_pending_updates=False,  # entries typed during a restart are still recorded
         )
     else:
         await bot.delete_webhook(drop_pending_updates=True)

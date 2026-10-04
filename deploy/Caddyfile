@@ -5,6 +5,9 @@
 
 {$DOMAIN} {
 	encode zstd gzip
+	request_body {
+		max_size 64KB
+	}
 	log {
 		output discard
 	}

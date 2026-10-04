@@ -5,12 +5,13 @@ from __future__ import annotations
 import re
 import uuid
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import CategoryHint
 
 _WORD = re.compile(r"[^\W\d_]{2,32}", re.UNICODE)
+MAX_HINTS_PER_USER = 2000
 
 
 def keywords(text: str) -> list[str]:
@@ -44,6 +45,11 @@ async def learn(session: AsyncSession, user_id: uuid.UUID, words: list[str], cat
         select(CategoryHint).where(CategoryHint.user_id == user_id, CategoryHint.keyword == word)
     )
     if hint is None:
+        count = await session.scalar(
+            select(func.count()).select_from(CategoryHint).where(CategoryHint.user_id == user_id)
+        )
+        if (count or 0) >= MAX_HINTS_PER_USER:
+            return
         session.add(CategoryHint(user_id=user_id, keyword=word, category_id=category_id, hits=1))
     elif hint.category_id == category_id:
         hint.hits = min(hint.hits + 1, 1_000_000)

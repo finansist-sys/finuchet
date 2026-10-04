@@ -50,6 +50,12 @@ def setup_logging(level: int = logging.INFO) -> None:
     root.handlers[:] = [h for h in root.handlers if not getattr(h, "_finuchet", False)]
     root.addHandler(handler)
     root.setLevel(level)
+    # uvicorn installs its own handlers (bypassing our filter) and logs full tracebacks of
+    # unhandled errors, which may contain SQL parameters. Route everything through root.
+    for name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
+        lg = logging.getLogger(name)
+        lg.handlers.clear()
+        lg.propagate = True
     # Libraries that may log request details: keep them quiet.
     for noisy in ("uvicorn.access", "aiogram.event", "httpx", "httpcore"):
         logging.getLogger(noisy).setLevel(logging.WARNING)

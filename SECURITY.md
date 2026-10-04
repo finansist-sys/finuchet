@@ -24,6 +24,19 @@ repository → **Security** → **Report a vulnerability**. We aim to reply with
 - **Repository**: pre-commit privacy guard + CI scan block e-mails, tokens, keys, local paths and
   non-anonymous commit identities.
 
+## Accepted risks (known limitations)
+
+- `initData` is valid for 24 hours: if a user leaks it (e.g. in a screenshot of dev tools), someone could
+  act as that user until it expires. Deleting all data still requires initData signed within 10 minutes.
+- The server can read financial records (they are linked only to a pseudonymous hash). End-to-end
+  encryption was deliberately left out of stage 1 for simplicity.
+- If both the database **and** `ID_PEPPER` leak, Telegram IDs can be recovered by brute force
+  (the ID space is small). Keep the pepper out of database backups.
+- CSP allows inline *styles* (not scripts) for compatibility with the Telegram WebApp script.
+- Base images and GitHub Actions are pinned by tag, not by digest/SHA.
+- Bot conversation state (which category was picked before typing an amount) lives in memory and is
+  lost on restart; nothing sensitive is kept there.
+
 ## Running the checks
 
 ```sh

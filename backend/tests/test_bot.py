@@ -124,3 +124,19 @@ async def test_webhook_rejects_wrong_token_and_secret(client, app, settings):
         assert r.status_code == 400
     finally:
         await app.state.bot.session.close()
+
+
+async def test_keyword_memory_is_capped(client, session_maker, settings, monkeypatch):
+    from app.db.models import CategoryHint
+    from app.services import hints
+
+    monkeypatch.setattr(hints, "MAX_HINTS_PER_USER", 3)
+    await onboard(client, TG_A)
+    async with session_maker() as s:
+        user = await users.find_user(s, tg_hash(TG_A, settings.id_pepper.get_secret_value()))
+        cat = await s.scalar(select(Category).where(Category.user_id == user.id))
+        for word in ["альфа", "бета", "гамма", "дельта", "эпсилон"]:
+            await hints.learn(s, user.id, [word], cat.id)
+            await s.commit()
+        rows = (await s.scalars(select(CategoryHint).where(CategoryHint.user_id == user.id))).all()
+        assert len(rows) == 3
