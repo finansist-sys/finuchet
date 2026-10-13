@@ -47,12 +47,10 @@ def test_rate_limiter():
 def test_uvicorn_error_logs_pass_through_redaction(capfd):
     """Unhandled-error tracebacks (may contain SQL parameters) must not reach the output."""
     import logging
-
     import logging.config
 
-    from uvicorn.config import LOGGING_CONFIG
-
     from app.log_setup import setup_logging
+    from uvicorn.config import LOGGING_CONFIG
 
     logging.config.dictConfig(LOGGING_CONFIG)  # exactly what uvicorn does before loading the app
     setup_logging()

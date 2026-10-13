@@ -2,7 +2,6 @@ import time
 from decimal import Decimal
 
 import pytest
-
 from app.bot.keywords import icon_for
 from app.bot.parser import parse
 

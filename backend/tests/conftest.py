@@ -5,7 +5,6 @@ import time
 
 import httpx
 import pytest
-
 from app.config import Settings
 from app.db.models import Base
 from app.db.session import make_engine, make_sessionmaker

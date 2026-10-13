@@ -1,9 +1,9 @@
 import logging
 import time
 
+from app.db.models import Account, Category, Transaction, User
 from sqlalchemy import select, text
 
-from app.db.models import Account, Category, Transaction, User
 from tests.conftest import TG_A, TG_B, auth, onboard
 
 
