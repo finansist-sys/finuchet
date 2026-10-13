@@ -49,8 +49,9 @@ def test_uvicorn_error_logs_pass_through_redaction(capfd):
     import logging
     import logging.config
 
-    from app.log_setup import setup_logging
     from uvicorn.config import LOGGING_CONFIG
+
+    from app.log_setup import setup_logging
 
     logging.config.dictConfig(LOGGING_CONFIG)  # exactly what uvicorn does before loading the app
     setup_logging()

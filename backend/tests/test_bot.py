@@ -1,13 +1,13 @@
 from decimal import Decimal
 
+from sqlalchemy import select
+
 from app.bot.handlers import card_text, guess_category, pick_account, record
 from app.bot.keyboards import cb, pack, unpack
 from app.bot.parser import Entry, parse
 from app.db.models import Account, Category, Transaction
 from app.security.identity import tg_hash
 from app.services import users
-from sqlalchemy import select
-
 from tests.conftest import TG_A, onboard
 
 
@@ -105,6 +105,7 @@ def test_callback_packing_fits_limit():
 
 async def test_webhook_rejects_wrong_token_and_secret(client, app, settings):
     from aiogram import Bot
+
     from app.bot.setup import build_dispatcher
 
     app.state.bot = Bot("123456:TEST")

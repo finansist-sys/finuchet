@@ -3,9 +3,9 @@ import time
 from urllib.parse import parse_qsl, urlencode
 
 import pytest
+
 from app.security.identity import tg_hash
 from app.security.telegram_auth import InitDataError, sign_init_data, validate_init_data
-
 from tests.conftest import BOT_TOKEN, auth, init_data
 
 DAY = 24 * 3600
