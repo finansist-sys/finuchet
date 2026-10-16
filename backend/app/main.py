@@ -4,16 +4,17 @@ from __future__ import annotations
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes import accounts, me, stats, transactions
 from app.config import Settings, get_settings
 from app.log_setup import setup_logging
-from app.security.headers import SecurityMiddleware
+from app.security.headers import SecurityMiddleware, is_api_path
 from app.security.ratelimit import RateLimiter
 from app.services.errors import DomainError
 
@@ -89,4 +90,23 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         configured = await ensure_bot_setup(app)
         return {"ok": True, "telegram_configured_now": configured}
 
+    if settings.static_dir and Path(settings.static_dir).is_dir():
+        mount_mini_app(app, Path(settings.static_dir))
+
     return app
+
+
+def mount_mini_app(app: FastAPI, root: Path) -> None:
+    """Serve the built Mini App (single-page app) from `root`, after all API routes."""
+    root = root.resolve()
+    index = root / "index.html"
+
+    @app.get("/{full_path:path}", include_in_schema=False, response_model=None)
+    async def mini_app(full_path: str) -> FileResponse | JSONResponse:
+        if is_api_path("/" + full_path):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
+        candidate = (root / full_path).resolve()
+        # Only files inside the build directory; anything else falls back to the SPA entry page.
+        if full_path and candidate.is_file() and root in candidate.parents:
+            return FileResponse(candidate)
+        return FileResponse(index)

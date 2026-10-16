@@ -1,11 +1,16 @@
+# Shared by Dockerfile (Railway) and deploy/Caddy.Dockerfile: never send secrets or local junk.
 .git
 .github
 .githooks
 .env
 .env.*
-backend
 design
 scripts
 **/node_modules
 **/dist
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
 **/*.db
+backend/tests

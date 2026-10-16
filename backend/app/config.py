@@ -29,16 +29,21 @@ class Settings(BaseSettings):
     # polling = local development without a public URL; off = tests.
     bot_mode: Literal["webhook", "serverless", "polling", "off"] = "webhook"
 
-    # Set automatically by Vercel ("finuchet.vercel.app"); used when PUBLIC_URL is not given.
-    vercel_project_production_url: str | None = None
+    # Set automatically by the platform; used when PUBLIC_URL is not given.
+    vercel_project_production_url: str | None = None  # Vercel: "finuchet.vercel.app"
+    railway_public_domain: str | None = None  # Railway: "finuchet-production.up.railway.app"
+
+    # Single-container hosting (Railway): the backend also serves the built Mini App from here.
+    static_dir: str | None = None
 
     # Dev only: lets the Mini App run in a normal browser as a fake user.
     dev_fake_tg_id: int | None = None
 
     @model_validator(mode="after")
     def _forbid_dev_shortcuts_in_prod(self) -> Settings:
-        if self.public_url == "https://example.com" and self.vercel_project_production_url:
-            self.public_url = "https://" + self.vercel_project_production_url.removeprefix("https://")
+        platform_host = self.vercel_project_production_url or self.railway_public_domain
+        if self.public_url == "https://example.com" and platform_host:
+            self.public_url = "https://" + platform_host.removeprefix("https://")
         if self.env == "prod" and self.dev_fake_tg_id is not None:
             raise ValueError("DEV_FAKE_TG_ID must not be set when ENV=prod")
         if self.env == "prod" and not self.public_url.startswith("https://"):
