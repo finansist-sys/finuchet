@@ -55,11 +55,11 @@ def make_engine(url: str, *, serverless: bool = False) -> AsyncEngine:
 
         return engine
     if serverless:
-        # No pooling across invocations; safe with connection poolers (PgBouncer transaction mode).
+        # No pooling across invocations; safe with connection poolers (PgBouncer transaction mode):
+        # disable both asyncpg's and SQLAlchemy's prepared-statement caches (the latter is a URL option).
         connect_args["statement_cache_size"] = 0
-        return create_async_engine(
-            url, poolclass=NullPool, connect_args=connect_args, prepared_statement_cache_size=0
-        )
+        url += ("&" if "?" in url else "?") + "prepared_statement_cache_size=0"
+        return create_async_engine(url, poolclass=NullPool, connect_args=connect_args)
     return create_async_engine(url, pool_pre_ping=True, connect_args=connect_args)
 
 

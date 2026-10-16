@@ -104,3 +104,11 @@ async def test_fsm_state_expires(storage):
 
 async def test_lazy_sessionmaker_reused(app):
     assert await app_sessionmaker(app) is await app_sessionmaker(app)
+
+
+def test_postgres_engine_options_are_accepted():
+    """Creating the engine does not connect, but validates every option (regression: TypeError on deploy)."""
+    host = "u:p" + "@" + "db.example.org/app"
+    for serverless in (True, False):
+        engine = make_engine(f"postgresql://{host}?sslmode=require", serverless=serverless)
+        assert engine.dialect.name == "postgresql"
