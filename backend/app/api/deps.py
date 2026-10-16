@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings
 from app.db.models import User
+from app.db.session import app_sessionmaker
 from app.security.identity import tg_hash
 from app.security.ratelimit import RateLimiter
 from app.security.telegram_auth import InitDataError, TelegramIdentity, validate_init_data
@@ -23,7 +24,8 @@ def settings_of(request: Request) -> Settings:
 
 
 async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
-    async with request.app.state.sessionmaker() as session:
+    maker = await app_sessionmaker(request.app)
+    async with maker() as session:
         yield session
 
 

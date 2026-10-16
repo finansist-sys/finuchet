@@ -25,14 +25,20 @@ class Settings(BaseSettings):
     init_data_ttl_seconds: int = 24 * 3600
     destructive_ttl_seconds: int = 10 * 60
 
-    # webhook = production; polling = local development without a public URL; off = tests.
-    bot_mode: Literal["webhook", "polling", "off"] = "webhook"
+    # webhook = own server (Docker); serverless = Vercel-style functions (no long-lived process);
+    # polling = local development without a public URL; off = tests.
+    bot_mode: Literal["webhook", "serverless", "polling", "off"] = "webhook"
+
+    # Set automatically by Vercel ("finuchet.vercel.app"); used when PUBLIC_URL is not given.
+    vercel_project_production_url: str | None = None
 
     # Dev only: lets the Mini App run in a normal browser as a fake user.
     dev_fake_tg_id: int | None = None
 
     @model_validator(mode="after")
     def _forbid_dev_shortcuts_in_prod(self) -> Settings:
+        if self.public_url == "https://example.com" and self.vercel_project_production_url:
+            self.public_url = "https://" + self.vercel_project_production_url.removeprefix("https://")
         if self.env == "prod" and self.dev_fake_tg_id is not None:
             raise ValueError("DEV_FAKE_TG_ID must not be set when ENV=prod")
         if self.env == "prod" and not self.public_url.startswith("https://"):
@@ -42,6 +48,10 @@ class Settings(BaseSettings):
     @property
     def is_prod(self) -> bool:
         return self.env == "prod"
+
+    @property
+    def serverless(self) -> bool:
+        return self.bot_mode == "serverless"
 
 
 @lru_cache

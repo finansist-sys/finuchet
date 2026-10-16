@@ -28,6 +28,17 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      - name: Vercel requirements match backend pins
+        run: |
+          python3 - <<'EOF'
+          import sys
+          pins = {l.strip().lower() for l in open("requirements.txt") if "==" in l}
+          vercel = [l.strip() for l in open("../requirements.txt") if "==" in l]
+          bad = [l for l in vercel if l.lower() not in pins]
+          print("
+".join(bad) or "in sync")
+          sys.exit(1 if bad else 0)
+          EOF
       - run: pip install -r requirements.txt pytest pytest-asyncio ruff pip-audit
       - run: ruff check app tests alembic
       - run: pytest -q

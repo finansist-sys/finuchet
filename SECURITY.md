@@ -34,8 +34,12 @@ repository → **Security** → **Report a vulnerability**. We aim to reply with
   (the ID space is small). Keep the pepper out of database backups.
 - CSP allows inline *styles* (not scripts) for compatibility with the Telegram WebApp script.
 - Base images and GitHub Actions are pinned by tag, not by digest/SHA.
-- Bot conversation state (which category was picked before typing an amount) lives in memory and is
-  lost on restart; nothing sensitive is kept there.
+- Rate limits are kept in process memory: on serverless hosting (Vercel) each instance counts
+  separately, so limits are best-effort there.
+- On managed platforms (Vercel, Neon) the provider's own infrastructure logs can include client IPs;
+  the application itself never stores or logs them.
+- Bot conversation state ("category picked, waiting for the amount") is stored in the database
+  under HMAC(pepper, chat/user ids) and expires after a day.
 
 ## Running the checks
 

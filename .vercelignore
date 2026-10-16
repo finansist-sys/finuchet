@@ -1,0 +1,14 @@
+# Never upload local environments, secrets, caches or design sources.
+.env
+.env.*
+**/.venv
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/*.db
+webapp/dist
+backend/tests
+design
+deploy
+.githooks

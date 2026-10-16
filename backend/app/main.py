@@ -12,7 +12,6 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes import accounts, me, stats, transactions
 from app.config import Settings, get_settings
-from app.db.session import make_engine, make_sessionmaker
 from app.log_setup import setup_logging
 from app.security.headers import SecurityMiddleware
 from app.security.ratelimit import RateLimiter
@@ -27,9 +26,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        engine = make_engine(settings.database_url.get_secret_value())
-        app.state.engine = engine
-        app.state.sessionmaker = make_sessionmaker(engine)
+        # Serverless platforms may skip lifespan entirely; everything here is optional:
+        # the DB engine and the bot dispatcher are created lazily on first use.
         from app.bot.setup import start_bot, stop_bot
 
         await start_bot(app)
@@ -37,7 +35,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             yield
         finally:
             await stop_bot(app)
-            await engine.dispose()
+            engine = getattr(app.state, "engine", None)
+            if engine is not None:
+                await engine.dispose()
 
     app = FastAPI(
         title="Finuchet API",
@@ -79,7 +79,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(webhook_router)
 
     @app.get("/healthz", include_in_schema=False)
+    @app.get("/api/healthz", include_in_schema=False)
     async def healthz() -> dict:
-        return {"ok": True}
+        # Serverless: first call after a deploy migrates the DB and points Telegram at this URL.
+        from app.bot.setup import ensure_bot_setup
+        from app.db.session import app_sessionmaker
+
+        await app_sessionmaker(app)
+        configured = await ensure_bot_setup(app)
+        return {"ok": True, "telegram_configured_now": configured}
 
     return app

@@ -109,7 +109,7 @@ async def test_webhook_rejects_wrong_token_and_secret(client, app, settings):
     from app.bot.setup import build_dispatcher
 
     app.state.bot = Bot("123456:TEST")
-    app.state.dp = build_dispatcher(settings, app.state.sessionmaker)
+    app.state.dp = build_dispatcher(app)
     try:
         assert (await client.post("/tg/wrong", json={})).status_code == 404
         r = await client.post(

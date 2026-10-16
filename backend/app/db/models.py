@@ -21,6 +21,7 @@ from sqlalchemy import (
     LargeBinary,
     SmallInteger,
     String,
+    Text,
     UniqueConstraint,
     Uuid,
 )
@@ -127,3 +128,17 @@ class CategoryHint(Base):
         ForeignKey("categories.id", ondelete="CASCADE"), nullable=False
     )
     hits: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+
+
+class BotState(Base):
+    """Short-lived bot conversation state ("picked a category, waiting for the amount").
+
+    Keyed by HMAC(pepper, chat/user ids) — Telegram ids are never stored. Rows expire after a day.
+    """
+
+    __tablename__ = "bot_states"
+
+    key: Mapped[bytes] = mapped_column(LargeBinary(32), primary_key=True)
+    state: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    data: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utcnow)

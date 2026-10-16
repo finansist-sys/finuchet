@@ -19,9 +19,9 @@ from app.services.users import find_user, lang_of
 
 
 class ContextMiddleware(BaseMiddleware):
-    def __init__(self, settings: Settings, sessionmaker, limiter: RateLimiter) -> None:
+    def __init__(self, settings: Settings, get_sessionmaker, limiter: RateLimiter) -> None:
         self.settings = settings
-        self.sessionmaker = sessionmaker
+        self.get_sessionmaker = get_sessionmaker  # async callable: created lazily (serverless)
         self.limiter = limiter
 
     async def __call__(
@@ -49,7 +49,8 @@ class ContextMiddleware(BaseMiddleware):
                 await event.answer()
             return None
 
-        async with self.sessionmaker() as session:
+        maker = await self.get_sessionmaker()
+        async with maker() as session:
             user = await find_user(session, h)
             data["session"] = session
             data["user"] = user
