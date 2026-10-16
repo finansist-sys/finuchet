@@ -35,8 +35,7 @@ jobs:
           pins = {l.strip().lower() for l in open("requirements.txt") if "==" in l}
           vercel = [l.strip() for l in open("../requirements.txt") if "==" in l]
           bad = [l for l in vercel if l.lower() not in pins]
-          print("
-".join(bad) or "in sync")
+          print(bad or "in sync")
           sys.exit(1 if bad else 0)
           EOF
       - run: pip install -r requirements.txt pytest pytest-asyncio ruff pip-audit
